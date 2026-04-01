@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation Asterisk 20 LTS – Ibnou</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --border: #30363d;
+            --green: #39d353;
+            --cyan: #58a6ff;
+            --yellow: #e3b341;
+            --red: #f85149;
+            --text: #e6edf3;
+            --muted: #8b949e;
+            --accent: #1f6feb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Sora', sans-serif;
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d2137 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 60px 0 40px 0;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(57, 211, 83, 0.12);
+            border: 1px solid rgba(57, 211, 83, 0.35);
+            color: var(--green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
+        h1 span { color: var(--cyan); }
+        .subtitle { color: var(--muted); font-size: 1.1rem; }
+
+        .meta {
+            display: flex; justify-content: center; gap: 30px; margin-top: 30px; flex-wrap: wrap;
+        }
+        .meta-item {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--muted);
+        }
+        .meta-item strong { color: var(--text); }
+
+        /* CONTENT */
+        .container { max-width: 880px; margin: 0 auto; padding: 0 25px; }
+
+        section { margin-top: 50px; }
+        .section-header {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
+            border-bottom: 1px solid var(--border); padding-bottom: 15px;
+        }
+        .num {
+            background: var(--accent); color: white; padding: 4px 12px;
+            border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-weight: bold;
+        }
+
+        h2 { font-size: 1.5rem; }
+        h3 { color: var(--yellow); margin: 25px 0 10px; font-size: 1.1rem; }
+        p { margin-bottom: 15px; color: #c9d1d9; }
+
+        /* TERMINAL STYLE */
+        .terminal {
+            background: #0a0e14; border: 1px solid #21262d; border-radius: 10px;
+            overflow: hidden; margin: 20px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .term-bar {
+            background: #1c2128; padding: 10px 15px; display: flex; gap: 8px;
+            border-bottom: 1px solid #21262d;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .term-body {
+            padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem;
+            white-space: pre-wrap; color: var(--text);
+        }
+
+        .cmd { color: var(--green); }
+        .out { color: #8b949e; }
+        .comment { color: #6e7681; font-style: italic; }
+
+        .note {
+            background: rgba(88, 166, 255, 0.08); border-left: 4px solid var(--cyan);
+            padding: 20px; border-radius: 4px; margin: 25px 0;
+        }
+
+        footer {
+            text-align: center; padding: 50px 0; border-top: 1px solid var(--border);
+            margin-top: 80px; font-family: 'JetBrains Mono', monospace; color: var(--muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="badge">Documentation IPBX</div>
+        <h1>Installation <span>Asterisk 20 LTS</span></h1>
+        <p class="subtitle">Déploiement complet sur Ubuntu 20.04 LTS</p>
+        <div class="meta">
+            <div class="meta-item">Auteur: <strong>Ibnou</strong></div>
+            <div class="meta-item">Version: <strong>20.x (LTS)</strong></div>
+            <div class="meta-item">Date: <strong>02 Juillet 2022</strong></div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+
+    <section>
+        <div class="section-header"><span class="num">01</span><h2>Mise à jour et Prérequis</h2></div>
+        <p>On prépare le système en installant les outils nécessaires à la compilation des sources.</p>
+        <div class="terminal">
+            <div class="term-bar">
+                <div class="dot" style="background:#ff5f56"></div>
+                <div class="dot" style="background:#ffbd2e"></div>
+                <div class="dot" style="background:#27c93f"></div>
+            </div>
+            <div class="term-body">
+<span class="cmd">ibnou@ubuntu:~$</span> sudo apt update && sudo apt upgrade -y
+<span class="cmd">ibnou@ubuntu:~$</span> sudo apt install wget build-essential subversion -y</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header"><span class="num">02</span><h2>Téléchargement d'Asterisk 20</h2></div>
+        <p>Nous téléchargeons la dernière version stable Long Term Support (LTS).</p>
+        <div class="terminal">
+            <div class="term-body">
+<span class="cmd">ibnou@ubuntu:~$</span> cd /opt/
+<span class="cmd">ibnou@ubuntu:/opt$</span> sudo wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-20-current.tar.gz
+<span class="cmd">ibnou@ubuntu:/opt$</span> sudo tar zxf asterisk-20-current.tar.gz
+<span class="cmd">ibnou@ubuntu:/opt$</span> cd asterisk-20.*/</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header"><span class="num">03</span><h2>Scripts et Dépendances</h2></div>
+        <p>Exécution des scripts officiels pour installer les bibliothèques manquantes (OpenSSL, LibXML2, etc.).</p>
+        <div class="terminal">
+            <div class="term-body">
+<span class="comment"># Téléchargement des sources MP3</span>
+<span class="cmd">ibnou@ubuntu:/opt/asterisk-20#</span> ./contrib/scripts/get_mp3_source.sh
+
+<span class="comment"># Installation automatique des dépendances système</span>
+<span class="cmd">ibnou@ubuntu:/opt/asterisk-20#</span> ./contrib/scripts/install_prereq install</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header"><span class="num">04</span><h2>Compilation</h2></div>
+        <div class="terminal">
+            <div class="term-body">
+<span class="cmd">ibnou@ubuntu:/opt/asterisk-20#</span> ./configure
+<span class="cmd">ibnou@ubuntu:/opt/asterisk-20#</span> make menuselect <span class="comment">(Sélectionnez format_mp3)</span>
+<span class="cmd">ibnou@ubuntu:/opt/asterisk-20#</span> make -j2
+<span class="cmd">ibnou@ubuntu:/opt/asterisk-20#</span> sudo make install
+<span class="cmd">ibnou@ubuntu:/opt/asterisk-20#</span> sudo make basic-pbx
+<span class="cmd">ibnou@ubuntu:/opt/asterisk-20#</span> sudo make config</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header"><span class="num">05</span><h2>Sécurité de l'Exécution</h2></div>
+        <p>Création d'un utilisateur système sans privilèges pour faire tourner le service Asterisk.</p>
+        <div class="terminal">
+            <div class="term-body">
+<span class="cmd">ibnou@ubuntu:~$</span> sudo adduser --system --group --home /var/lib/asterisk --no-create-home asterisk
+<span class="cmd">ibnou@ubuntu:~$</span> sudo chown -R asterisk: /var/{lib,log,run,spool}/asterisk /usr/lib/asterisk /etc/asterisk</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header"><span class="num">06</span><h2>Lancement du Service</h2></div>
+        <div class="terminal">
+            <div class="term-body">
+<span class="cmd">ibnou@ubuntu:~$</span> sudo systemctl start asterisk
+<span class="cmd">ibnou@ubuntu:~$</span> sudo systemctl enable asterisk
+
+<span class="comment"># Accès à la console de debug</span>
+<span class="cmd">ibnou@ubuntu:~$</span> sudo asterisk -rvvvvvvv</div>
+        </div>
+    </section>
+
+    <div class="note">
+        <strong>Félicitations !</strong> Votre serveur Asterisk 20 est maintenant opérationnel. N'oubliez pas d'ouvrir le port <strong>5060 (UDP)</strong> dans votre pare-feu pour autoriser le trafic SIP.
+    </div>
+
+</div>
+
+<footer>
+    <p>Rapport de TP - Ibnou &copy; 2022-2026</p>
+</footer>
+
+</body>
+</html>
