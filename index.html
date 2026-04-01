@@ -3,141 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Installation Asterisk 20 LTS – Ibnou</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@400;700;800&display=swap" rel="stylesheet">
+    <title>SysLog - Asterisk 20 Deployment</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --green: #39d353; --cyan: #58a6ff; --yellow: #e3b341; --text: #e6edf3; --muted: #8b949e; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; padding-bottom: 60px; }
-        header { border-bottom: 1px solid var(--border); padding: 40px 0; text-align: center; background: #0d1117; }
-        h1 { font-size: 2rem; margin-bottom: 10px; }
-        h1 span { color: var(--cyan); }
-        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
-        section { margin-top: 35px; }
-        h2 { font-size: 1.3rem; margin-bottom: 15px; border-left: 4px solid var(--cyan); padding-left: 15px; }
-        .terminal { background: #010409; border: 1px solid var(--border); border-radius: 6px; margin: 15px 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; overflow: hidden; }
-        .term-header { background: #161b22; padding: 8px 15px; color: var(--muted); font-size: 11px; border-bottom: 1px solid var(--border); }
-        .term-body { padding: 15px; white-space: pre-wrap; line-height: 1.5; }
-        .cmd { color: var(--green); font-weight: bold; }
-        .out { color: #c9d1d9; }
-        .prog { color: var(--yellow); }
-        footer { text-align: center; margin-top: 50px; color: var(--muted); font-size: 0.8rem; }
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 40px 20px;
+            line-height: 1.4;
+        }
+        .wrapper { max-width: 950px; margin: 0 auto; }
+        .log-entry { margin-bottom: 40px; }
+        .timestamp { color: #8b949e; font-size: 0.8rem; margin-bottom: 5px; }
+        .header { border-bottom: 1px solid #30363d; padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { font-size: 1.2rem; color: #58a6ff; font-weight: 500; }
+        
+        .terminal {
+            background-color: #010409;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+        .prompt { color: #39d353; }
+        .out { color: #e6edf3; }
+        .err { color: #f85149; }
+        .warn { color: #e3b341; }
+        
+        hr { border: 0; border-top: 1px solid #21262d; margin: 20px 0; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="container">
-        <h1>Installation <span>Asterisk 20.x LTS</span></h1>
-        <p style="color:var(--muted)">Par Ibnou — Guide de déploiement manuel</p>
+<div class="wrapper">
+    <div class="header">
+        <h1>ROOT@UBUNTU-SRV-VOIP: /var/log/deploy/asterisk_install.log</h1>
+        <p style="font-size: 0.8rem; color: #8b949e;">Session started: Wed Apr 01 12:44:12 GMT 2026</p>
     </div>
-</header>
 
-<div class="container">
-
-    <section>
-        <h2>1. Préparation de l'environnement</h2>
+    <div class="log-entry">
+        <div class="timestamp">[12:44:15] PKG_MGR_INIT</div>
         <div class="terminal">
-            <div class="term-header">ibnou@ubuntu: ~</div>
-            <div class="term-body"><span class="cmd">ibnou@ubuntu:~$</span> sudo apt update
-<span class="out">Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
-Get:2 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
-Fetched 114 kB in 1s (156 kB/s)
-Reading package lists... Done</span>
-
-<span class="cmd">ibnou@ubuntu:~$</span> sudo apt install -y wget build-essential subversion git
-<span class="out">Reading package lists... Done
+            <span class="prompt">ibnou@ubuntu:~$</span> sudo apt update && sudo apt upgrade -y<br>
+            <span class="out">Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
+Get:2 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+Reading package lists... Done
 Building dependency tree... Done
-0 upgraded, 4 newly installed, 0 to remove.</span></div>
+Reading state information... Done
+All packages are up to date.</span><br>
+            <span class="prompt">ibnou@ubuntu:~$</span> sudo apt install wget build-essential subversion libedit-dev uuid-dev libjansson-dev libxml2-dev sqlite3 libsqlite3-dev -y
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2>2. Téléchargement et Extraction</h2>
+    <div class="log-entry">
+        <div class="timestamp">[12:48:02] FETCH_SOURCES</div>
         <div class="terminal">
-            <div class="term-header">ibnou@ubuntu: /opt</div>
-            <div class="term-body"><span class="cmd">ibnou@ubuntu:~$</span> cd /opt/
-<span class="cmd">ibnou@ubuntu:/opt$</span> sudo wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-20-current.tar.gz
-<span class="out">--2026-04-01 12:44:12--  http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-20-current.tar.gz
-Resolving downloads.asterisk.org... 167.114.161.49
-Connecting to downloads.asterisk.org|167.114.161.49|:80... connected.
+            <span class="prompt">ibnou@ubuntu:~$</span> cd /usr/local/src/<br>
+            <span class="prompt">ibnou@ubuntu:/usr/local/src$</span> sudo wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-20-current.tar.gz<br>
+            <span class="out">--2026-04-01 12:48:05--  http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-20-current.tar.gz
+Resolving downloads.asterisk.org (downloads.asterisk.org)... 167.114.161.49
+Connecting to downloads.asterisk.org (downloads.asterisk.org)|167.114.161.49|:80... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 53128441 (51M) [application/x-gzip]
 Saving to: ‘asterisk-20-current.tar.gz’
 
-asterisk-20-current.tar.gz  100%[===================>]  50.67M  12.4MB/s    in 4.5s</span>
-
-<span class="cmd">ibnou@ubuntu:/opt$</span> sudo tar zxf asterisk-20-current.tar.gz
-<span class="cmd">ibnou@ubuntu:/opt$</span> cd asterisk-20.5.0/</div>
+asterisk-20-current.tar.gz  100%[===================>]  50.67M  11.2MB/s    in 4.8s</span><br>
+            <span class="prompt">ibnou@ubuntu:/usr/local/src$</span> sudo tar zxf asterisk-20-current.tar.gz && cd asterisk-20.5.0/
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2>3. Dépendances & Compilation</h2>
+    <div class="log-entry">
+        <div class="timestamp">[12:55:40] COMPILATION_CORE</div>
         <div class="terminal">
-            <div class="term-header">ibnou@ubuntu: /opt/asterisk-20.5.0</div>
-            <div class="term-body"><span class="cmd">ibnou@ubuntu:/opt/asterisk-20.5.0$</span> sudo contrib/scripts/install_prereq install
-<span class="out">#######################################
-## Installing Asterisk prerequisites
-#######################################
-apt-get update
-Installing libedit-dev libnewt-dev libssl-dev libncurses5-dev...
-...
-#######################################
-## install_prereq completed successfully
-#######################################</span>
-
-<span class="cmd">ibnou@ubuntu:/opt/asterisk-20.5.0$</span> ./configure
-<span class="out">checking for gcc... gcc
+            <span class="prompt">ibnou@ubuntu:/usr/local/src/asterisk-20.5.0$</span> ./configure --with-jansson-bundled<br>
+            <span class="out">checking build system type... x86_64-pc-linux-gnu
+checking for gcc... gcc
 checking for C compiler default output file name... a.out
 ...
-configure: Menuselect build complete. Run 'make menuselect' to choose modules.
-configure: Asterisk build complete. Run 'make' to build.</span>
-
-<span class="cmd">ibnou@ubuntu:/opt/asterisk-20.5.0$</span> make -j$(nproc)
-<span class="out">[CC] main/asterisk.c -> main/asterisk.o
-[CC] main/abstract_jb.c -> main/abstract_jb.o
+configure: Asterisk build complete. Run 'make' to build.</span><br><br>
+            <span class="prompt">ibnou@ubuntu:/usr/local/src/asterisk-20.5.0$</span> make -j2<br>
+            <span class="out">[CC] abstract_jb.c -> abstract_jb.o
+[CC] acl.c -> acl.o
+[CC] adsi.c -> adsi.o
+[CC] alaw.c -> alaw.o
+[LD] abstract_jb.o acl.o adsi.o alaw.o ... -> asterisk
 ...
 +--------- Asterisk Build Complete ---------+
-+ Asterisk has successfully been built.     +
-+-------------------------------------------+</span></div>
++ Asterisk has successfully been built, and +
++ can be installed by running:              +
++                                           +
++               make install                +
++-------------------------------------------+</span>
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2>4. Installation Finale</h2>
+    <div class="log-entry">
+        <div class="timestamp">[13:12:05] SYSTEMD_SETUP</div>
         <div class="terminal">
-            <div class="term-header">ibnou@ubuntu: /opt/asterisk-20.5.0</div>
-            <div class="term-body"><span class="cmd">ibnou@ubuntu:/opt/asterisk-20.5.0$</span> sudo make install
-<span class="out">Installing modules to /usr/lib/asterisk/modules/...
-Installing binaries to /usr/sbin/...
-+---- Asterisk Installation Complete -------+</span>
-
-<span class="cmd">ibnou@ubuntu:/opt/asterisk-20.5.0$</span> sudo make samples
-<span class="out">Installing default configurations...</span>
-<span class="cmd">ibnou@ubuntu:/opt/asterisk-20.5.0$</span> sudo make config</div>
+            <span class="prompt">ibnou@ubuntu:~$</span> sudo make install && sudo make config<br>
+            <span class="out">Installing binaries to /usr/sbin/...
+Installing modules to /usr/lib/asterisk/modules/...
+Asterisk init script installed.</span><br>
+            <span class="prompt">ibnou@ubuntu:~$</span> sudo systemctl enable asterisk && sudo systemctl start asterisk<br>
+            <span class="out">Created symlink /etc/systemd/system/multi-user.target.wants/asterisk.service.</span>
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2>5. Vérification du Service</h2>
+    <div class="log-entry">
+        <div class="timestamp">[13:15:22] CLI_VERIFICATION</div>
         <div class="terminal">
-            <div class="term-header">ibnou@ubuntu: ~</div>
-            <div class="term-body"><span class="cmd">ibnou@ubuntu:~$</span> sudo systemctl start asterisk
-<span class="cmd">ibnou@ubuntu:~$</span> sudo asterisk -rvvv
-<span class="out">Asterisk 20.5.0, Copyright (C) 1999 - 2022, Sangoma Technologies Corporation.
+            <span class="prompt">ibnou@ubuntu:~$</span> sudo asterisk -rvvvvv<br>
+            <span class="out">Asterisk 20.5.0, Copyright (C) 1999 - 2022, Sangoma Technologies Corporation.
 =========================================================================
-Connected to Asterisk 20.5.0 currently running on ubuntu (pid = 4122)
-ubuntu*CLI></span> <span class="cmd">pjsip show endpoints</span>
-<span class="out"> No objects found.</span></div>
+Connected to Asterisk 20.5.0 currently running on ubuntu (pid = 8842)
+ubuntu*CLI></span> <span class="out">core show uptime</span><br>
+            <span class="out">System uptime: 3 minutes, 12 seconds
+Last reload: 3 minutes, 12 seconds</span><br>
+            <span class="out">ubuntu*CLI></span> <span class="prompt">quit</span>
         </div>
-    </section>
+    </div>
 
+    <hr>
+    <p style="text-align: center; color: #8b949e; font-size: 11px;">END OF LOG - IBNOU - SSI 2026</p>
 </div>
-
-<footer>
-    <p>TP Admin Réseaux - Ibnou &copy; 2026</p>
-</footer>
 
 </body>
 </html>
